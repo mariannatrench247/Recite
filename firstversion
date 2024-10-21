@@ -1,0 +1,68 @@
+import tkinter as tk
+from tkinter import filedialog, messagebox
+from gtts import gTTS
+import os
+
+# Function to upload the text file
+def upload_file():
+    global text_file_path
+    text_file_path = filedialog.askopenfilename(
+        filetypes=[("Text Files", "*.txt")], 
+        title="Select a Text File"
+    )
+    if text_file_path:
+        file_label.config(text=f"File: {os.path.basename(text_file_path)}")
+
+# Function to convert text to speech
+def text_to_speech():
+    if not text_file_path:
+        messagebox.showerror("Error", "Please upload a text file first.")
+        return
+    
+    with open(text_file_path, "r", encoding="utf-8") as file:
+        text = file.read()
+
+    try:
+        tts = gTTS(text)
+        audio_file = "output.mp3"
+        tts.save(audio_file)
+        messagebox.showinfo("Success", "Audio file created successfully!")
+        download_button.config(state=tk.NORMAL)
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to convert text to speech: {e}")
+
+# Function to download the audio file
+def download_audio():
+    save_path = filedialog.asksaveasfilename(
+        defaultextension=".mp3", 
+        filetypes=[("Audio Files", "*.mp3")], 
+        title="Save Audio File"
+    )
+    if save_path:
+        os.rename("output.mp3", save_path)
+        messagebox.showinfo("Success", "Audio file downloaded successfully!")
+
+# Set up the main window
+root = tk.Tk()
+root.title("Text to Speech Application")
+
+text_file_path = None
+
+# Upload button
+upload_button = tk.Button(root, text="Upload Text File", command=upload_file)
+upload_button.pack(pady=10)
+
+# Label to show uploaded file
+file_label = tk.Label(root, text="No file selected.")
+file_label.pack(pady=5)
+
+# Convert button
+convert_button = tk.Button(root, text="Convert to Speech", command=text_to_speech)
+convert_button.pack(pady=10)
+
+# Download button (disabled until a file is created)
+download_button = tk.Button(root, text="Download Audio", command=download_audio, state=tk.DISABLED)
+download_button.pack(pady=10)
+
+# Start the Tkinter loop
+root.mainloop()
