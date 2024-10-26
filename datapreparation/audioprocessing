@@ -1,0 +1,8 @@
+#Ensure you have your audio files converted to .wav form 'Please see file'
+#Ensure you have Python, Torch and Suno Bark library installed on your device
+
+  import librosa 
+  import soundfile as sf
+
+  audio, sr = librosa.load('your_file.wav', sr=16000)
+  sf.write('your_processed_file.wav', audio, sr)
