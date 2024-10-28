@@ -1,3 +1,5 @@
+//Loading your data/transcript to train 
+
 from bark import BarkModel
 from torch.utils.data import DataLoader
 
